@@ -1,0 +1,365 @@
+"use client";
+
+import { abi } from "@/abi/abi";
+import { checkBetStatus } from "@/utils/get-txn-status";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Address, parseEther } from "viem";
+import {
+  useAccount,
+  useBalance,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+import axios from "axios";
+import moment from "moment";
+
+function Hero() {
+  const { address } = useAccount();
+  const { data: balance } = useBalance({ address });
+  const [connected, setConnected] = useState(false);
+  const [side, setSide] = useState<"heads" | "tails">("heads");
+  const [won, setWon] = useState(false);
+  const [bet, setBet] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState<1 | 5 | 10 | 35>(1);
+  const [chartData, setChartData] = useState<
+    {
+      game: string;
+      address: string;
+      time: string;
+      betAmount: number;
+      transaction: string;
+      result: boolean;
+    }[]
+  >([]);
+
+  console.log(chartData);
+
+  const {
+    data: hash,
+    isPending,
+    error,
+    writeContractAsync,
+  } = useWriteContract();
+
+  const { isSuccess: isConfirmed, error: writeError } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
+
+  const onBet = async () => {
+    if (!address) {
+      toast.error("Please connect your wallet to bet");
+      return;
+    }
+    if (Number(balance?.value.toString() || 0) / 1e18 < amount) {
+      toast.error("Insufficient Balance");
+      return;
+    }
+    const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+    if (!contractAddress) {
+      toast.error("Contract address not found");
+      return;
+    }
+    setLoading(true);
+    try {
+      await writeContractAsync({
+        address: contractAddress as Address,
+        abi,
+        functionName: "coinFlip",
+        args: [side === "heads" ? 0 : 1],
+        value: parseEther(amount.toString()),
+        gas: BigInt(500000),
+      });
+    } catch (e) {
+      console.log(e);
+      toast.error("An error occurred");
+      setLoading(false);
+    }
+  };
+
+  const checkStatus = async () => {
+    const result = await checkBetStatus(address as Address);
+    setWon(result);
+
+    if (result === null) {
+      return;
+    }
+    setLoading(false);
+    setBet(true);
+  };
+
+  // Enhanced useEffect for error handling
+  useEffect(() => {
+    // Handle transaction confirmation
+    if (isConfirmed && hash) {
+      checkStatus();
+    }
+
+    // Handle pending state
+    if (isPending) {
+      toast.info("Transaction pending...");
+    }
+
+    // Handle errors from useWriteContract
+    if (error && loading) {
+      setLoading(false);
+      toast.error(error.message || "Transaction reverted");
+      console.error("Write contract error:", error);
+    }
+
+    //Handle errors from transaction receipt
+    if (writeError && loading) {
+      setLoading(false);
+      toast.error(writeError.message || "Transaction failed");
+      console.error("Transaction receipt error:", writeError);
+    }
+  }, [isConfirmed, isPending, error, writeError, hash]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/getTopBets");
+        const data = response.data;
+
+        setChartData(() => {
+          return data.map((bet: any) => {
+            return {
+              game: bet.game,
+              address: bet.better,
+              time: new Date(bet.time).toLocaleString(),
+              betAmount: bet.betAmount,
+              transaction: bet.transaction,
+              result: bet.result,
+            };
+          });
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Set up the interval correctly
+    let id: any = null;
+    fetchData().then(() => {
+      id = setInterval(fetchData, 3000);
+    });
+    // Cleanup function to clear interval on unmount
+    return () => {
+      clearInterval(id);
+    };
+  }, []);
+
+  return (
+    <div className="w-full h-auto flex flex-col items-center p-8 gap-8">
+      {!connected ? (
+        <>
+          <h1 className="text-5xl text-center font-bold">
+            CUB COIN. <span className="font-[100]">FLIP TO PLAY.</span>
+          </h1>
+          <Image src={"/Home/coin.png"} alt="coin" width={300} height={300} />
+
+          <button
+            className="py-2 px-6 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+            onClick={() => {
+              if (!address) {
+                toast.error("Please connect your wallet");
+                return;
+              }
+              setConnected(true);
+            }}
+          >
+            CONNECT
+          </button>
+
+          <div className="w-[40%] min-h-[30vh] rounded-2xl border-2 border-[#B58421] bg-[#02012E] h-auto">
+            {chartData.map((item, index) => (
+              <div
+                key={index}
+                className={`w-full ${index === 0 ? "rounded-t-2xl" : ""} ${
+                  index !== chartData.length - 1
+                    ? "border-b-2 border-[#B58421]"
+                    : ""
+                } flex justify-between items-center p-4 font-[100]`}
+              >
+                <p>
+                  <span className="font-bold">
+                    {item.address.slice(0, 3)}...{item.address.slice(-3)}
+                  </span>{" "}
+                  flipped{" "}
+                  <span
+                    className={`${
+                      item.result ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {item.betAmount}
+                  </span>{" "}
+                  and <span>{item.result ? "doubled !" : "got rugged"}</span>
+                </p>
+                <p>{moment(item.time, "DD/MM/YYYY HH:mm:ss").fromNow()}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : !bet ? (
+        <>
+          <div className="flex flex-row w-[70%] justify-between items-center">
+            <button
+              className="cursor-pointer"
+              disabled={loading}
+              onClick={() => setSide("heads")}
+              style={{
+                filter:
+                  side === "heads" ? "drop-shadow(0px 0px 10px #B58421)" : "",
+              }}
+            >
+              <Image
+                src={"/Home/heads.png"}
+                alt="heads"
+                width={100}
+                height={100}
+              />
+            </button>
+            <Image
+              src={"/Home/coin.png"}
+              alt="coin"
+              width={450}
+              height={450}
+              className={`transition-transform ${
+                loading ? "animate-coin-flip" : ""
+              }`}
+            />
+            <button
+              className="cursor-pointer relative flex items-center justify-center"
+              disabled={loading}
+              onClick={() => setSide("tails")}
+              style={{
+                filter:
+                  side === "tails" ? "drop-shadow(0px 0px 10px #B58421)" : "",
+              }}
+            >
+              <Image
+                src={"/Home/coin-bg.png"}
+                alt="coin-bg"
+                width={100}
+                height={100}
+              />
+              <Image
+                src={"/Home/tails.png"}
+                className="absolute"
+                alt="tails"
+                width={100}
+                height={100}
+              />
+            </button>
+          </div>
+          <div className="flex flex-row items-center gap-4">
+            <button
+              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+              disabled={loading}
+              style={{ backgroundColor: amount === 1 ? "#B58421" : "#010026" }}
+              onClick={() => {
+                setAmount(1);
+              }}
+            >
+              1 BERA
+            </button>
+            <button
+              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+              disabled={loading}
+              style={{ backgroundColor: amount === 5 ? "#B58421" : "#010026" }}
+              onClick={() => {
+                setAmount(5);
+              }}
+            >
+              5 BERA
+            </button>
+            <button
+              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+              disabled={loading}
+              style={{ backgroundColor: amount === 10 ? "#B58421" : "#010026" }}
+              onClick={() => {
+                setAmount(10);
+              }}
+            >
+              10 BERA
+            </button>
+            <button
+              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+              disabled={loading}
+              style={{ backgroundColor: amount === 35 ? "#B58421" : "#010026" }}
+              onClick={() => {
+                setAmount(35);
+              }}
+            >
+              35 BERA
+            </button>
+          </div>
+          <button
+            className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+            disabled={loading}
+            onClick={onBet}
+          >
+            FLIP
+          </button>
+        </>
+      ) : (
+        <>
+          <h1 className="text-5xl text-center font-bold">
+            YOU{" "}
+            {won ? (
+              <>
+                WIN! <span className="text-green-500">{2 * amount}</span>
+              </>
+            ) : (
+              "LOST!"
+            )}
+          </h1>
+
+          <button
+            className="py-2 px-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+            disabled={loading}
+            onClick={() => {
+              setBet(false);
+            }}
+          >
+            FLIP AGAIN
+          </button>
+
+          <div className="w-[40%] min-h-[30vh] mt-8 rounded-2xl border-2 border-[#B58421] bg-[#02012E] h-auto">
+            {chartData.map((item, index) => (
+              <div
+                key={index}
+                className={`w-full ${index === 0 ? "rounded-t-2xl" : ""} ${
+                  index !== chartData.length - 1
+                    ? "border-b-2 border-[#B58421]"
+                    : ""
+                } flex justify-between items-center p-4 font-[100]`}
+              >
+                <p>
+                  <span className="font-bold">
+                    {item.address.slice(0, 3)}...{item.address.slice(-3)}
+                  </span>{" "}
+                  flipped{" "}
+                  <span
+                    className={`${
+                      item.result ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {item.betAmount}
+                  </span>{" "}
+                  and <span>{item.result ? "doubled !" : "got rugged"}</span>
+                </p>
+                <p>{moment(item.time, "DD/MM/YYYY HH:mm:ss").fromNow()}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default Hero;

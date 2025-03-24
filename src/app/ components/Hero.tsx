@@ -198,7 +198,14 @@ function Hero() {
                   </span>{" "}
                   and <span>{item.result ? "doubled !" : "got rugged"}</span>
                 </p>
-                <p>{moment(item.time, "DD/MM/YYYY HH:mm:ss").fromNow()}</p>
+                {moment(item.time, [
+                  "DD/MM/YYYY HH:mm:ss",
+                  "MM/DD/YYYY HH:mm:ss",
+                  "YYYY/MM/DD HH:mm:ss",
+                  "YYYY/DD/MM HH:mm:ss",
+                  "DD/YYYY/MM HH:mm:ss",
+                  "MM/YYYY/DD HH:mm:ss",
+                ]).fromNow()}
               </div>
             ))}
           </div>
@@ -212,7 +219,7 @@ function Hero() {
               onClick={() => setSide("heads")}
               style={{
                 filter:
-                  side === "heads" ? "drop-shadow(0px 0px 10px #B58421)" : "",
+                  side === "heads" ? "drop-shadow(0px 0px 25px #B58421)" : "",
               }}
             >
               <Image
@@ -237,7 +244,7 @@ function Hero() {
               onClick={() => setSide("tails")}
               style={{
                 filter:
-                  side === "tails" ? "drop-shadow(0px 0px 10px #B58421)" : "",
+                  side === "tails" ? "drop-shadow(0px 0px 25px #B58421)" : "",
               }}
             >
               <Image
@@ -352,7 +359,16 @@ function Hero() {
                   </span>{" "}
                   and <span>{item.result ? "doubled !" : "got rugged"}</span>
                 </p>
-                <p>{moment(item.time, "DD/MM/YYYY HH:mm:ss").fromNow()}</p>
+                <p>
+                  {moment(item.time, [
+                    "DD/MM/YYYY HH:mm:ss",
+                    "MM/DD/YYYY HH:mm:ss",
+                    "YYYY/MM/DD HH:mm:ss",
+                    "YYYY/DD/MM HH:mm:ss",
+                    "DD/YYYY/MM HH:mm:ss",
+                    "MM/YYYY/DD HH:mm:ss",
+                  ]).fromNow()}
+                </p>{" "}
               </div>
             ))}
           </div>

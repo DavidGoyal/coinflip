@@ -5,7 +5,7 @@ import Hero from "./ components/Hero";
 export default function Home() {
   return (
     <div className="w-screen min-h-screen bg-[url(/Home/bg.gif)] bg-cover bg-center flex flex-col items-center">
-      <Header heads={69} />
+      <Header />
       <Hero />
       <Footer />
     </div>

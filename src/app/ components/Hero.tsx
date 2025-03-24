@@ -129,7 +129,7 @@ function Hero() {
             return {
               game: bet.game,
               address: bet.better,
-              time: new Date(bet.time).toLocaleString(),
+              time: bet.time,
               betAmount: bet.betAmount,
               transaction: bet.transaction,
               result: bet.result,
@@ -198,14 +198,7 @@ function Hero() {
                   </span>{" "}
                   and <span>{item.result ? "doubled !" : "got rugged"}</span>
                 </p>
-                {moment(item.time, [
-                  "DD/MM/YYYY HH:mm:ss",
-                  "MM/DD/YYYY HH:mm:ss",
-                  "YYYY/MM/DD HH:mm:ss",
-                  "YYYY/DD/MM HH:mm:ss",
-                  "DD/YYYY/MM HH:mm:ss",
-                  "MM/YYYY/DD HH:mm:ss",
-                ]).fromNow()}
+                {moment.utc(item.time).local().fromNow()}
               </div>
             ))}
           </div>
@@ -359,16 +352,7 @@ function Hero() {
                   </span>{" "}
                   and <span>{item.result ? "doubled !" : "got rugged"}</span>
                 </p>
-                <p>
-                  {moment(item.time, [
-                    "DD/MM/YYYY HH:mm:ss",
-                    "MM/DD/YYYY HH:mm:ss",
-                    "YYYY/MM/DD HH:mm:ss",
-                    "YYYY/DD/MM HH:mm:ss",
-                    "DD/YYYY/MM HH:mm:ss",
-                    "MM/YYYY/DD HH:mm:ss",
-                  ]).fromNow()}
-                </p>{" "}
+                <p>{moment.utc(item.time).local().fromNow()}</p>{" "}
               </div>
             ))}
           </div>

@@ -225,8 +225,8 @@ function Hero() {
             <Image
               src={"/Home/coin.png"}
               alt="coin"
-              width={450}
-              height={450}
+              width={400}
+              height={400}
               className={`transition-transform ${
                 loading ? "animate-coin-flip" : ""
               }`}

@@ -16,6 +16,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
+    console.error("Error fetching bets:", error);
     return new Response(JSON.stringify(error), {
       status: 500,
       headers: {

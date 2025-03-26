@@ -18,7 +18,7 @@ model Bets{
   game        String
   better      String 
   time        String
-  betAmount   Int
+  betAmount   String
   result      Boolean
   transaction String
   @@index([better])

@@ -10,8 +10,8 @@ export async function GET(request: Request) {
     });
     return new Response(
       JSON.stringify({
-        heads: sides?.heads,
-        tails: sides?.tails,
+        heads: sides?.heads || 0,
+        tails: sides?.tails || 0,
       }),
       {
         status: 200,
@@ -21,6 +21,7 @@ export async function GET(request: Request) {
       }
     );
   } catch (error) {
+    console.error("Error fetching heads count:", error);
     return new Response(JSON.stringify(error), {
       status: 500,
       headers: {

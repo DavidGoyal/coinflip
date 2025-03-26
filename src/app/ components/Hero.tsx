@@ -23,7 +23,7 @@ function Hero() {
   const [won, setWon] = useState(false);
   const [bet, setBet] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState<1 | 5 | 10 | 35>(1);
+  const [amount, setAmount] = useState<0.5 | 1 | 3 | 5>(0.5);
   const [chartData, setChartData] = useState<
     {
       game: string;
@@ -259,6 +259,18 @@ function Hero() {
             <button
               className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
               disabled={loading}
+              style={{
+                backgroundColor: amount === 0.5 ? "#B58421" : "#010026",
+              }}
+              onClick={() => {
+                setAmount(0.5);
+              }}
+            >
+              0.5 BERA
+            </button>
+            <button
+              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+              disabled={loading}
               style={{ backgroundColor: amount === 1 ? "#B58421" : "#010026" }}
               onClick={() => {
                 setAmount(1);
@@ -269,32 +281,22 @@ function Hero() {
             <button
               className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
               disabled={loading}
+              style={{ backgroundColor: amount === 3 ? "#B58421" : "#010026" }}
+              onClick={() => {
+                setAmount(3);
+              }}
+            >
+              3 BERA
+            </button>
+            <button
+              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
+              disabled={loading}
               style={{ backgroundColor: amount === 5 ? "#B58421" : "#010026" }}
               onClick={() => {
                 setAmount(5);
               }}
             >
               5 BERA
-            </button>
-            <button
-              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
-              disabled={loading}
-              style={{ backgroundColor: amount === 10 ? "#B58421" : "#010026" }}
-              onClick={() => {
-                setAmount(10);
-              }}
-            >
-              10 BERA
-            </button>
-            <button
-              className="py-2 px-10 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
-              disabled={loading}
-              style={{ backgroundColor: amount === 35 ? "#B58421" : "#010026" }}
-              onClick={() => {
-                setAmount(35);
-              }}
-            >
-              35 BERA
             </button>
           </div>
           <button
@@ -340,7 +342,7 @@ function Hero() {
               >
                 <p>
                   <span className="font-bold">
-                    {item.address.slice(0, 3)}...{item.address.slice(-3)}
+                    {item.address.slice(0, 2)}...{item.address.slice(-2)}
                   </span>{" "}
                   flipped{" "}
                   <span

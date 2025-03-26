@@ -181,7 +181,7 @@ function Header() {
             } flex gap-1 items-center justify-center p-4 font-[100]`}
           >
             <span className="font-bold">
-              {item.address.slice(0, 3)}...{item.address.slice(-3)}
+              {item.address.slice(0, 2)}...{item.address.slice(-2)}
             </span>{" "}
             flipped{" "}
             <span
@@ -207,7 +207,7 @@ function Header() {
             } flex gap-1 items-center justify-center p-4 font-[100]`}
           >
             <span className="font-bold">
-              {item.address.slice(0, 3)}...{item.address.slice(-3)}
+              {item.address.slice(0, 2)}...{item.address.slice(-2)}
             </span>{" "}
             is on{" "}
             <span

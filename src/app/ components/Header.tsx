@@ -152,15 +152,13 @@ function Header() {
         <div className="h-full flex gap-8 items-center">
           <button
             className="w-fit h-fit border-[1px] border-cyan-400 rounded-3xl py-2 px-4 text-cyan-400 cursor-pointer flex items-center justify-between gap-1"
-            onMouseEnter={() => setRecentMenu(true)}
-            onMouseLeave={() => setRecentMenu(false)}
+            onClick={() => setRecentMenu((prev) => !prev)}
           >
             RECENT <TiArrowSortedDown className="text-2xl" />
           </button>
           <button
             className="w-fit h-fit border-[1px] border-cyan-400 rounded-3xl py-2 px-4 text-cyan-400 cursor-pointer flex items-center justify-between gap-1"
-            onMouseEnter={() => setStreakMenu(true)}
-            onMouseLeave={() => setStreakMenu(false)}
+            onClick={() => setStreakMenu((prev) => !prev)}
           >
             STREAKS <TiArrowSortedDown className="text-2xl" />
           </button>
@@ -168,10 +166,8 @@ function Header() {
       </nav>
 
       <div
-        className="absolute top-28 right-6 flex-col h-[58%] w-[20%] rounded-2xl border-2 border-cyan-400 bg-[#000000] transition-all duration-1000 ease-in-out"
+        className="absolute top-28 right-6 flex-col h-[58%] w-[20%] rounded-2xl border-2 border-cyan-400 bg-[#000000] transition-all duration-1000 ease-in-out z-50"
         style={{ display: recentMenu ? "flex" : "none" }}
-        onMouseEnter={() => setRecentMenu(true)}
-        onMouseLeave={() => setRecentMenu(false)}
       >
         {chartData.slice(0, 8).map((item, index) => (
           <div
@@ -194,10 +190,8 @@ function Header() {
         ))}
       </div>
       <div
-        className="absolute top-28 right-6 flex-col h-[58%] w-[20%] rounded-2xl border-2 border-cyan-400 bg-[#000000] transition-all duration-1000 ease-in-out"
+        className="absolute top-28 right-6 flex-col h-[58%] w-[20%] rounded-2xl border-2 border-cyan-400 bg-[#000000] transition-all duration-1000 ease-in-out z-50"
         style={{ display: streakMenu ? "flex" : "none" }}
-        onMouseEnter={() => setStreakMenu(true)}
-        onMouseLeave={() => setStreakMenu(false)}
       >
         {streakData.slice(0.8).map((item, index) => (
           <div

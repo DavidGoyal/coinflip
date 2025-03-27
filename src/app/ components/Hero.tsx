@@ -22,7 +22,7 @@ function Hero() {
   const [side, setSide] = useState<"heads" | "tails">("heads");
   const [won, setWon] = useState(false);
   const [bet, setBet] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [amount, setAmount] = useState<0.5 | 1 | 3 | 5>(0.5);
   const [chartData, setChartData] = useState<
     {
@@ -159,7 +159,12 @@ function Hero() {
           <h1 className="text-5xl text-center font-bold">
             CUB COIN. <span className="font-[100]">FLIP TO PLAY.</span>
           </h1>
-          <Image src={"/Home/coin.png"} alt="coin" width={300} height={300} />
+          <Image
+            src={"/Home/head-coin.png"}
+            alt="coin"
+            width={300}
+            height={300}
+          />
 
           <button
             className="py-2 px-6 mt-8 rounded-4xl font-bold bg-[#010026] border-2 border-[#B58421] cursor-pointer hover:border-cyan-400 hover:bg-[#B58421]"
@@ -222,15 +227,38 @@ function Hero() {
                 height={100}
               />
             </button>
-            <Image
-              src={"/Home/coin.png"}
-              alt="coin"
-              width={400}
-              height={400}
-              className={`transition-transform ${
-                loading ? "animate-coin-flip" : ""
-              }`}
-            />
+            {!loading ? (
+              <Image
+                src={
+                  side === "heads"
+                    ? "/Home/head-coin.png"
+                    : "/Home/tail-coin.png"
+                }
+                alt="coin"
+                width={400}
+                height={400}
+                className={`transition-transform`}
+              />
+            ) : (
+              <div className="coin-container">
+                <div className="coin">
+                  <Image
+                    src="/Home/head-coin.png"
+                    alt="heads"
+                    className="heads"
+                    width={400}
+                    height={400}
+                  />
+                  <Image
+                    src="/Home/tail-coin.png"
+                    alt="tails"
+                    className="tails"
+                    width={400}
+                    height={400}
+                  />
+                </div>
+              </div>
+            )}
             <button
               className="cursor-pointer relative flex items-center justify-center"
               disabled={loading}
@@ -329,6 +357,23 @@ function Hero() {
           >
             FLIP AGAIN
           </button>
+
+          {
+            <Image
+              src={
+                won
+                  ? side === "heads"
+                    ? "/Home/head-coin.png"
+                    : "/Home/tail-coin.png"
+                  : side === "heads"
+                  ? "/Home/tail-coin.png"
+                  : "/Home/head-coin.png"
+              }
+              alt="coin"
+              width={300}
+              height={300}
+            />
+          }
 
           <div className="w-[40%] min-h-[30vh] mt-8 rounded-2xl border-2 border-[#B58421] bg-[#02012E] h-auto">
             {chartData.map((item, index) => (

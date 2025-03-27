@@ -22,7 +22,7 @@ function Hero() {
   const [side, setSide] = useState<"heads" | "tails">("heads");
   const [won, setWon] = useState(false);
   const [bet, setBet] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState<0.5 | 1 | 3 | 5>(0.5);
   const [chartData, setChartData] = useState<
     {
@@ -34,8 +34,6 @@ function Hero() {
       result: boolean;
     }[]
   >([]);
-
-  console.log(chartData);
 
   const {
     data: hash,

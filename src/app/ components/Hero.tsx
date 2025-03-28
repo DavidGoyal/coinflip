@@ -250,7 +250,7 @@ function Hero() {
               width={400}
               height={400}
               className={`transition-transform ${
-                loading ? "animation-coin-flip" : ""
+                loading ? "animate-coin-flip" : ""
               }`}
             />
             <button

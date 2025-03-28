@@ -242,27 +242,17 @@ function Hero() {
                 height={100}
               />
             </button>
-            {!loading ? (
-              <Image
-                src={
-                  side === "heads"
-                    ? "/Home/head-coin.png"
-                    : "/Home/tail-coin.png"
-                }
-                alt="coin"
-                width={400}
-                height={400}
-                className={`transition-transform`}
-              />
-            ) : (
-              <Image
-                src={srcSide}
-                alt="coin"
-                width={400}
-                height={400}
-                className={`transition-transform animate-coin-flip`}
-              />
-            )}
+            <Image
+              src={
+                side === "heads" ? "/Home/head-coin.png" : "/Home/tail-coin.png"
+              }
+              alt="coin"
+              width={400}
+              height={400}
+              className={`transition-transform ${
+                loading ? "animation-coin-flip" : ""
+              }`}
+            />
             <button
               className="cursor-pointer relative flex items-center justify-center"
               disabled={loading}

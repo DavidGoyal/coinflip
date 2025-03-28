@@ -20,9 +20,6 @@ function Hero() {
   const { data: balance } = useBalance({ address });
   const [connected, setConnected] = useState(false);
   const [side, setSide] = useState<"heads" | "tails">("heads");
-  const [srcSide, setSrcSide] = useState<
-    "/Home/head-coin.png" | "/Home/tail-coin.png"
-  >("/Home/head-coin.png");
   const [won, setWon] = useState(false);
   const [bet, setBet] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -153,20 +150,6 @@ function Hero() {
     };
   }, []);
 
-  useEffect(() => {
-    if (loading) {
-      const interval = setInterval(() => {
-        setSrcSide((prev) =>
-          prev === "/Home/head-coin.png"
-            ? "/Home/tail-coin.png"
-            : "/Home/head-coin.png"
-        );
-      }, 500); // Sync with animation half-cycle
-
-      return () => clearInterval(interval); // Cleanup on unmount
-    }
-  }, [loading]);
-
   return (
     <div className="w-full h-auto flex flex-col items-center p-8 gap-8">
       {!connected ? (
@@ -242,17 +225,42 @@ function Hero() {
                 height={100}
               />
             </button>
-            <Image
-              src={
-                side === "heads" ? "/Home/head-coin.png" : "/Home/tail-coin.png"
-              }
-              alt="coin"
-              width={400}
-              height={400}
-              className={`transition-transform ${
-                loading ? "animate-coin-flip" : ""
-              }`}
-            />
+            {!loading ? (
+              <Image
+                src={
+                  side === "heads"
+                    ? "/Home/head-coin.png"
+                    : "/Home/tail-coin.png"
+                }
+                alt="coin"
+                width={400}
+                height={400}
+                className={`transition-transform ${
+                  loading ? "animate-coin-flip" : ""
+                }`}
+              />
+            ) : (
+              <div className="coin-container">
+                <div className={`coin-flipper ${!loading ? "paused" : ""}`}>
+                  <Image
+                    src="/Home/head-coin.png"
+                    alt="coin heads"
+                    width={400}
+                    height={400}
+                    className="coin-side coin-front"
+                    loading="eager"
+                  />
+                  <Image
+                    src="/Home/tail-coin.png"
+                    alt="coin tails"
+                    width={400}
+                    height={400}
+                    className="coin-side coin-back"
+                    loading="eager"
+                  />
+                </div>
+              </div>
+            )}
             <button
               className="cursor-pointer relative flex items-center justify-center"
               disabled={loading}

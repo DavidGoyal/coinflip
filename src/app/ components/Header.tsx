@@ -152,13 +152,19 @@ function Header() {
         <div className="h-full flex gap-8 items-center">
           <button
             className="w-fit h-fit border-[1px] border-cyan-400 rounded-3xl py-2 px-4 text-cyan-400 cursor-pointer flex items-center justify-between gap-1"
-            onClick={() => setRecentMenu((prev) => !prev)}
+            onClick={() => {
+              setStreakMenu(false);
+              setRecentMenu((prev) => !prev);
+            }}
           >
             RECENT <TiArrowSortedDown className="text-2xl" />
           </button>
           <button
             className="w-fit h-fit border-[1px] border-cyan-400 rounded-3xl py-2 px-4 text-cyan-400 cursor-pointer flex items-center justify-between gap-1"
-            onClick={() => setStreakMenu((prev) => !prev)}
+            onClick={() => {
+              setRecentMenu(false);
+              setStreakMenu((prev) => !prev);
+            }}
           >
             STREAKS <TiArrowSortedDown className="text-2xl" />
           </button>

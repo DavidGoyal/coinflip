@@ -10,19 +10,19 @@ function Footer() {
       <FaDiscord
         className="text-2xl cursor-pointer"
         onClick={() => {
-          window.open("https://discord.gg/cubhub", "_blank");
+          window.open("https://discord.gg/HJMdYb8U4Q", "_blank");
         }}
       />
-      <FaInstagram
+      {/* <FaInstagram
         className="text-2xl cursor-pointer"
         onClick={() => {
           window.open("https://discord.gg/cubhub", "_blank");
         }}
-      />
+      /> */}
       <FaXTwitter
         className="text-2xl cursor-pointer"
         onClick={() => {
-          window.open("https://discord.gg/cubhub", "_blank");
+          window.open("https://x.com/CubhubX", "_blank");
         }}
       />
     </footer>

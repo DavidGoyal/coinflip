@@ -123,7 +123,7 @@ function Header() {
             onClick={() => window.location.reload()}
           >
             <Image
-              src="/home/head-coin.png"
+              src="/Home/head-coin.png"
               alt="Logo"
               width={100}
               height={100}

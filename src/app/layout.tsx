@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CubFlip",
-  description: "Coin Flip Game for the Cubs.",
+  title: "CoinFlip",
+  description: "Coin Flip Game.",
 };
 
 export default function RootLayout({

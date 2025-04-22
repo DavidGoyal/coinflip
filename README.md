@@ -8,7 +8,7 @@ CoinFlip is a fully decentralized platform that allows users to play the coinfli
 
 ## **Program**
 
-The Twiftify program is a custom smart contract on the Berachain.You can see the program deployed on the Berachain [here](https://bepolia.beratrail.io/address/0x1408d301d385ABE00Bd9eBC73B8E1Be1A43EdA03).
+The program is a custom smart contract on the HyperLiquid.You can see the program deployed on the Hyperliquid [here](https://testnet.purrsec.com/address/0xcf0d0d6973cad2f7acf414a04b5d33484d3b99cb).
 
 ## **Getting Started**
 
